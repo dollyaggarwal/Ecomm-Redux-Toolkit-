@@ -2,43 +2,46 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
-import { getADocsFromFirestore, loginUserWithEmailAndPassword } from '../firebase/firebase';
+import {
+	getADocsFromFirestore,
+	loginUserWithEmailAndPassword,
+} from '../firebase/firebase';
 
 function SignIn() {
-	
 	//create initial data
 	const [userData, setUserData] = useState({
-		email: "",
-		password: "",
-	  });
+		email: '',
+		password: '',
+	});
 
-	  //set data
-	  const data = (e) => {
+	//set data
+	const data = (e) => {
 		let name = e.target.name;
 		let value = e.target.value;
 		setUserData({ ...userData, [name]: value });
-	  };
+	};
 
-	const  handleSubmitForLogin = async()=>{
-		try{
-			if(!userData.email.includes("@")){
-				toast.error("Please enter valid email id");
+	const handleSubmitForLogin = async () => {
+		try {
+			if (!userData.email.includes('@')) {
+				toast.error('Please enter valid email id');
 				return;
 			}
-			const data = await loginUserWithEmailAndPassword(userData.email, userData.password);
-			
-			if(data.message.includes("invalid-credential")){
-				toast.error("Invalid email or password");
+			const data = await loginUserWithEmailAndPassword(
+				userData.email,
+				userData.password
+			);
+
+			if (data.message.includes('invalid-credential')) {
+				toast.error('Invalid email or password');
 				return;
 			}
 			const user = data.user;
-			const cart = await  getADocsFromFirestore("carts", user.uid);
-			
-		}catch(err){
-			console.log(err.message)
+			const cart = await getADocsFromFirestore('carts', user.uid);
+		} catch (err) {
+			console.log(err.message);
 		}
-			
-	}
+	};
 	return (
 		<>
 			<section>

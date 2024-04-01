@@ -4,24 +4,28 @@ import { Button } from '@material-tailwind/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFirebase } from '../firebase/firebaseConfig';
 import { useDispatch, useSelector } from 'react-redux';
-import { cartSelector, decreaseQuantity, findCartTotal, findFinalTotal, getAllCarts, increaseQuantity, removeFromCarts } from '../Redux/Reducers/cartReducer';
+import {
+	cartSelector,
+	decreaseQuantity,
+	getAllCarts,
+	increaseQuantity,
+	removeFromCarts,
+} from '../Redux/Reducers/cartReducer';
 import { checkoutOrders } from '../Redux/Reducers/orderReducer';
 
 function CartItems() {
-	const {user} = useFirebase();
+	const { user } = useFirebase();
 	const dispatch = useDispatch();
-	const {carts,cartTotal,finalTotal} = useSelector(cartSelector);
+	const { carts, cartTotal, finalTotal } = useSelector(cartSelector);
 	const navigate = useNavigate();
 
-	const checkoutToOrders = ()=>{
-		dispatch(checkoutOrders({userId:user.uid}))
+	const checkoutToOrders = () => {
+		dispatch(checkoutOrders({ userId: user.uid }));
 		navigate('/orders');
-	}
-useEffect(()=>{
-
- dispatch(getAllCarts({userId:user.uid}));
-
-},[dispatch,user])
+	};
+	useEffect(() => {
+		dispatch(getAllCarts({ userId: user.uid }));
+	}, [dispatch, user]);
 
 	return (
 		<>
@@ -29,16 +33,20 @@ useEffect(()=>{
 				<div className='container mx-auto px-4'>
 					<h1 className='text-2xl font-semibold mb-4'>Shopping Cart</h1>
 					<div className='flex flex-col md:flex-row gap-8'>
-						<div className={`${carts?.length == 0 ? "md:w-full": "md:w-3/4"}`}>
+						<div className={`${carts?.length == 0 ? 'md:w-full' : 'md:w-3/4'}`}>
 							{carts?.length > 0 ? (
 								<div className='bg-white rounded-lg shadow-lg pl-1 py-6 mb-4'>
 									<table className='w-full h-full '>
 										<thead>
 											<tr>
-												<th className='text-center text-md font-bold'>Product</th>
+												<th className='text-center text-md font-bold'>
+													Product
+												</th>
 												<th className='text-center text-md font-bold'>Name</th>
 												<th className='text-left text-md font-bold'>Price</th>
-												<th className='text-left text-md font-bold'>Quantity</th>
+												<th className='text-left text-md font-bold'>
+													Quantity
+												</th>
 												<th className='text-left text-md font-bold'>Total</th>
 												<th className='text-left text-md font-bold'>Action</th>
 											</tr>
@@ -47,7 +55,6 @@ useEffect(()=>{
 										<tbody>
 											{carts.map((item) => {
 												return (
-												
 													<tr key={item.id}>
 														<td className='py-2 flex items-center justify-center'>
 															<div className='h-20 w-16'>
@@ -59,7 +66,7 @@ useEffect(()=>{
 															</div>
 														</td>
 														<td className='py-4 text-sm text-center'>
-														  {item.title}
+															{item.title}
 														</td>
 														<td className='py-4 text-sm '>
 															&#8377;{item.price.toLocaleString('en-IN')}
@@ -68,7 +75,14 @@ useEffect(()=>{
 															<div className='flex items-center'>
 																<button
 																	className='border rounded-md py-2 px-4 mr-2'
-																	onClick={() => dispatch(decreaseQuantity({userId:user.uid,itemId:item.id}))}>
+																	onClick={() =>
+																		dispatch(
+																			decreaseQuantity({
+																				userId: user.uid,
+																				itemId: item.id,
+																			})
+																		)
+																	}>
 																	-
 																</button>
 																<span className='text-center w-2'>
@@ -76,28 +90,40 @@ useEffect(()=>{
 																</span>
 																<button
 																	className='border rounded-md py-2 px-4 ml-2'
-																	onClick={() => dispatch(increaseQuantity({userId:user.uid,itemId:item.id}))}>
+																	onClick={() =>
+																		dispatch(
+																			increaseQuantity({
+																				userId: user.uid,
+																				itemId: item.id,
+																			})
+																		)
+																	}>
 																	+
 																</button>
 															</div>
 														</td>
 														<td className='py-4 text-sm '>
-															&#8377;{(item.qty * item.price).toLocaleString('en-IN')}
+															&#8377;
+															{(item.qty * item.price).toLocaleString('en-IN')}
 														</td>
 														<td className='py-4 text-lg'>
 															<MdDelete
-																onClick={() => dispatch(removeFromCarts({userId:user.uid,itemId:item.id}))}
+																onClick={() =>
+																	dispatch(
+																		removeFromCarts({
+																			userId: user.uid,
+																			itemId: item.id,
+																		})
+																	)
+																}
 																className='size-6 cursor-pointer hover:text-red-700'
 															/>
 														</td>
 													</tr>
-												
 												);
-											
 											})}
-											</tbody>
-											{/* More product rows */}
-										
+										</tbody>
+										{/* More product rows */}
 									</table>
 								</div>
 							) : (

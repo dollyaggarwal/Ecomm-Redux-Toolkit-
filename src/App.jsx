@@ -59,8 +59,8 @@ function App() {
 			</Helmet>
 			<Routes>
 				<Route path='/' element={<Navbar />}>
-				<Route index element={<Banner />} />
-				<Route
+					<Route index element={<Banner />} />
+					<Route
 						path='orders'
 						element={
 							<ProtectedRoute>
@@ -68,18 +68,17 @@ function App() {
 							</ProtectedRoute>
 						}
 					/>
-				<Route
+					<Route
 						path='cart'
 						element={
 							<ProtectedRoute>
 								<CartItems />
-								</ProtectedRoute>
-							
+							</ProtectedRoute>
 						}
 					/>
-				<Route path='login' element={<SignIn />} />
-				<Route path='signup' element={<SignUp />} />
-				<Route path='*' element={<RouteErrorPage />} />
+					<Route path='login' element={<SignIn />} />
+					<Route path='signup' element={<SignUp />} />
+					<Route path='*' element={<RouteErrorPage />} />
 				</Route>
 			</Routes>
 		</>

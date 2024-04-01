@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Items } from '../../data/itemsData';
 
-
 const initialState = {
 	Items: Items,
 };

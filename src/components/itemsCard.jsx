@@ -1,24 +1,22 @@
-
 import { FcCancel } from 'react-icons/fc';
 import { useDispatch, useSelector } from 'react-redux';
-import {itemSelector } from '../Redux/Reducers/itemsReducer';
+import { itemSelector } from '../Redux/Reducers/itemsReducer';
 import { useFirebase } from '../firebase/firebaseConfig';
 import { addToCarts } from '../Redux/Reducers/cartReducer';
 import toast from 'react-hot-toast';
 
 function ItemsContainer() {
-	const {user} = useFirebase();
-	const {Items} = useSelector(itemSelector);
+	const { user } = useFirebase();
+	const { Items } = useSelector(itemSelector);
 	const dispatch = useDispatch();
 
-	const addItem = (item)=>{
-		if(!user){
-			toast.error("Please login to add items to the cart");
+	const addItem = (item) => {
+		if (!user) {
+			toast.error('Please login to add items to the cart');
 			return;
 		}
-		dispatch(addToCarts({userId:user.uid,item}));
+		dispatch(addToCarts({ userId: user.uid, item }));
 	};
-
 
 	return (
 		<>
@@ -52,7 +50,6 @@ function ItemsContainer() {
 									</p>
 								</div>
 								<div className='flex items-center justify-between mb-2 w-48'>
-									
 									<p className='font-sans text-base antialiased font-medium leading-relaxed text-blue-gray-900'>
 										&#8377;{item.price.toLocaleString('en-IN')}
 									</p>
@@ -63,7 +60,7 @@ function ItemsContainer() {
 							</div>
 							<div className='p-6 pt-0'>
 								<button
-									onClick={()=>addItem(item)}
+									onClick={() => addItem(item)}
 									className='align-middle select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg shadow-gray-900/10 hover:shadow-gray-900/20  active:shadow-none block w-full bg-gray-900/10 text-blue-gray-900  hover:scale-110 hover:bg-orange-400 hover:text-neutral-800 focus:scale-105 focus:shadow-none active:scale-100'
 									type='button'>
 									Add to Cart

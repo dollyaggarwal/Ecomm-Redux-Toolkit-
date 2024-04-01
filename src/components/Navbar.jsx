@@ -13,32 +13,30 @@ import { getAllCarts } from '../Redux/Reducers/cartReducer';
 import { logoutUser } from '../firebase/firebase';
 
 function Navbar() {
-	const {user} = useFirebase();
+	const { user } = useFirebase();
 	const dispatch = useDispatch();
 
-useEffect(()=>{
-
-	dispatch(getAllCarts())	
-},[]);
+	useEffect(() => {
+		dispatch(getAllCarts());
+	}, []);
 	return (
 		<>
 			<nav>
 				<div className='w-full h-fit border border-b-1 shadow-md flex flex-col md:flex-row items-center md:justify-between z-1 relative'>
 					<div className='flex md:max-w-[50%] md:min-w-[40%] w-full items-center md:py-0 py-4'>
+						<div className='w-20 h-full mx-6'>
+							<img src={logo} alt='logo' />
+						</div>
 
-					<div className='w-20 h-full mx-6'>
-						<img src={logo} alt='logo' />
-					</div>
-
-					<div className='relative md:max-w-[80%] md:min-w-[60%] md:w-[70%] text-gray-900 font-semibold lg:block mr-4 w-full'>
-						<input
-							onChange={(e)=>dispatch(searchItems(e.target.value))}
-							className='border-2 border-gray-400 bg-white w-full h-11 pl-3 rounded-lg text-sm focus:outline-none'
-							type='search'
-							name='search'
-							placeholder='Search for Brands,Products and more...'
-						/>
-					</div>
+						<div className='relative md:max-w-[80%] md:min-w-[60%] md:w-[70%] text-gray-900 font-semibold lg:block mr-4 w-full'>
+							<input
+								onChange={(e) => dispatch(searchItems(e.target.value))}
+								className='border-2 border-gray-400 bg-white w-full h-11 pl-3 rounded-lg text-sm focus:outline-none'
+								type='search'
+								name='search'
+								placeholder='Search for Brands,Products and more...'
+							/>
+						</div>
 					</div>
 
 					<div className='flex justify-between gap-2 md:min-w-[35rem] md:max-w-[50rem] items-center py-5 w-full px-8 sm:mr-5'>

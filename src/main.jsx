@@ -10,10 +10,10 @@ import { store } from './Redux/store.js';
 ReactDOM.createRoot(document.getElementById('root')).render(
 	<BrowserRouter>
 		<Provider store={store}>
-		<FirebaseProvider>
-			<App />
-			<Toaster />
-		</FirebaseProvider>
+			<FirebaseProvider>
+				<App />
+				<Toaster />
+			</FirebaseProvider>
 		</Provider>
 	</BrowserRouter>
 );

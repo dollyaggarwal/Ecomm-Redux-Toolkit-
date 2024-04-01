@@ -1,60 +1,63 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useFirebase } from '../firebase/firebaseConfig';
-import { setDataToFirestoreRef, signupUserWithEmailAndPassword } from '../firebase/firebase';
+import {
+	setDataToFirestoreRef,
+	signupUserWithEmailAndPassword,
+} from '../firebase/firebase';
 import toast from 'react-hot-toast';
 
 function SignUp() {
-
 	//create initial user data
 	const [userData, setUserData] = useState({
-		name: "",
-		email: "",
-		password: "",
+		name: '',
+		email: '',
+		password: '',
 		termsCondition: false,
-	  });
-	
-	  const data = (e) => {
+	});
+
+	const data = (e) => {
 		let name = e.target.name;
 		let value = e.target.value;
 		setUserData({ ...userData, [name]: value });
-	  };
-	  const handleSubmitForRegister = async ()=>{
-		try{
+	};
+	const handleSubmitForRegister = async () => {
+		try {
+			if (!userData.email.includes('@')) {
+				toast.error('Please enter valid email id');
+				return;
+			}
+			if (userData.password.length < 6) {
+				toast.error('Password length should be more than or equal to 6');
+				return;
+			}
+			const data = await signupUserWithEmailAndPassword(
+				userData.email,
+				userData.password
+			);
+			if (data.message.includes('email-already-in-use')) {
+				toast.error('Email already exists');
+				return;
+			}
+			const user = data.user;
 
-		if(!userData.email.includes("@")){
-			toast.error("Please enter valid email id");
-			return;
+			await setDataToFirestoreRef('users', user.uid, {
+				userId: user.uid,
+				name: userData.name,
+				email: userData.email,
+			});
+			await setDataToFirestoreRef('carts', user.uid, {
+				createdAt: new Date().toDateString(),
+				carts: [],
+			});
+			await setDataToFirestoreRef('orders', user.uid, {
+				createdAt: new Date().toDateString(),
+				orders: [],
+			});
+		} catch (err) {
+			console.log(err.message);
 		}
-		if(userData.password.length < 6){
-			toast.error("Password length should be more than or equal to 6")
-			return;
-		}
-		const data = await signupUserWithEmailAndPassword(userData.email, userData.password);
-		if(data.message.includes("email-already-in-use")){
-			toast.error("Email already exists");
-			return;
-		}
-		const user = data.user;
-		
-		await setDataToFirestoreRef("users", user.uid,  {
-			userId: user.uid,
-			name:userData.name,
-			email:userData.email,
-		});
-		await setDataToFirestoreRef("carts", user.uid, {
-			createdAt: new Date().toDateString(),
-			carts:[],
-		});
-		await setDataToFirestoreRef("orders", user.uid, {
-			createdAt: new Date().toDateString(),
-			orders:[],
-		});
-	}catch(err){
-		console.log(err.message)
-	}
-	  }
-	
+	};
+
 	return (
 		<>
 			<section>
@@ -131,7 +134,12 @@ function SignUp() {
 											className='w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800'
 											required
 											checked={userData.termsCondition}
-											onChange={(e) =>setUserData({ ...userData, termsCondition: e.target.checked })}
+											onChange={(e) =>
+												setUserData({
+													...userData,
+													termsCondition: e.target.checked,
+												})
+											}
 										/>
 									</div>
 									<div className='ml-3 text-sm'>

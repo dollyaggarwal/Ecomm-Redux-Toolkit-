@@ -1,13 +1,9 @@
-//get all needed react hooks
-import { createContext, useContext, useEffect, useState } from 'react';
 //get inititalized database
 import { initializeApp } from 'firebase/app';
 //authentication
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 //firestore database
-import {
-	getFirestore,
-} from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore';
 //realtime database
 // import { getDatabase, set, ref } from "firebase/database";
 

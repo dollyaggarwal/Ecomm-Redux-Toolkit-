@@ -17,7 +17,7 @@ export const FirebaseProvider = ({ children }) => {
 
 	useEffect(() => {
 		onAuthStateChanged(firebaseAuth, (user) => {
-			 console.clear()
+			console.clear();
 			if (user) {
 				setUser(user);
 			} else {
