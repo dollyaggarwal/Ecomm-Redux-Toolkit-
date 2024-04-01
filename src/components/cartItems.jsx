@@ -4,12 +4,13 @@ import { Button } from '@material-tailwind/react';
 import { Link } from 'react-router-dom';
 import { useFirebase } from '../firebase/firebaseConfig';
 import { useDispatch, useSelector } from 'react-redux';
-import { cartSelector, getAllCarts } from '../Redux/Reducers/cartReducer';
+import { cartSelector, getAllCarts, removeFromCarts } from '../Redux/Reducers/cartReducer';
 
 function CartItems() {
 	const {user} = useFirebase();
 	const dispatch = useDispatch();
 	const {carts} = useSelector(cartSelector);
+	const cartTotal = 0, finalTotal=0;
 	// const cartTotal = cart
 	// 	.reduce((curr, item) => curr + item.price * item.qty, 0)
 	// 	.toLocaleString('en-IN');
@@ -17,7 +18,7 @@ function CartItems() {
 	// const finalTotal =
 	// 	cartTotal !== 0 && cartTotal < 500 ? parseInt(cartTotal) + 75 : cartTotal;
 useEffect(()=>{
-	
+	console.log(user.uid)
  dispatch(getAllCarts({userId:user.uid}));
 },[dispatch,user])
 	return (
@@ -83,7 +84,7 @@ useEffect(()=>{
 														</td>
 														<td className='py-4 text-lg'>
 															<MdDelete
-																onClick={() => removeFromCart(item.id)}
+																onClick={() => dispatch(removeFromCarts({userId:user.uid,itemId:item.id}))}
 																className='size-6 cursor-pointer hover:text-red-700'
 															/>
 														</td>
@@ -138,7 +139,7 @@ useEffect(()=>{
 									<Link to='/orders'>
 										<button
 											className='bg-black text-white font-bold text-md py-2 px-2 rounded-md hover:bg-orange-400 hover:text-black mt-4 w-full'
-											onClick={checkoutToOrders}>
+											onClick={()=>{}}>
 											Checkout
 										</button>
 									</Link>
