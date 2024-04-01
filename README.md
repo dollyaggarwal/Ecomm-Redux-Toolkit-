@@ -50,8 +50,7 @@ Welcome to our e-commerce application! This project is built using React.js, Red
 To run this project locally, follow these steps:
 
 1. Clone the repository:
-git clone https://github.com/dollyaggarwal/E-Comm-Redux-Toolkit-.git
-
+git clone https://github.com/dollyaggarwal/Ecomm-Redux-Toolkit-
 2. Navigate to the project directory:
 
 cd E-Comm-Redux-Toolkit-
