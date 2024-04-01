@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 import { getADocsFromFirestore, loginUserWithEmailAndPassword } from '../firebase/firebase';
 
@@ -20,14 +21,23 @@ function SignIn() {
 
 	const  handleSubmitForLogin = async()=>{
 		try{
-			const {user} = await loginUserWithEmailAndPassword(userData.email, userData.password);
+			if(!userData.email.includes("@")){
+				toast.error("Please enter valid email id");
+				return;
+			}
+			const data = await loginUserWithEmailAndPassword(userData.email, userData.password);
+			
+			if(data.message.includes("invalid-credential")){
+				toast.error("Invalid email or password");
+				return;
+			}
+			const user = data.user;
 			const cart = await  getADocsFromFirestore("carts", user.uid);
-			console.log(cart);
+			
 		}catch(err){
 			console.log(err.message)
 		}
-		
-		
+			
 	}
 	return (
 		<>

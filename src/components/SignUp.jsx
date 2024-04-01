@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useFirebase } from '../firebase/firebaseConfig';
 import { setDataToFirestoreRef, signupUserWithEmailAndPassword } from '../firebase/firebase';
+import toast from 'react-hot-toast';
 
 function SignUp() {
 
@@ -19,7 +20,22 @@ function SignUp() {
 		setUserData({ ...userData, [name]: value });
 	  };
 	  const handleSubmitForRegister = async ()=>{
-		const {user} = await signupUserWithEmailAndPassword(userData.email, userData.password);
+		try{
+
+		if(!userData.email.includes("@")){
+			toast.error("Please enter valid email id");
+			return;
+		}
+		if(userData.password.length < 6){
+			toast.error("Password length should be more than or equal to 6")
+			return;
+		}
+		const data = await signupUserWithEmailAndPassword(userData.email, userData.password);
+		if(data.message.includes("email-already-in-use")){
+			toast.error("Email already exists");
+			return;
+		}
+		const user = data.user;
 		
 		await setDataToFirestoreRef("users", user.uid,  {
 			userId: user.uid,
@@ -34,6 +50,9 @@ function SignUp() {
 			createdAt: new Date().toDateString(),
 			orders:[],
 		});
+	}catch(err){
+		console.log(err.message)
+	}
 	  }
 	
 	return (

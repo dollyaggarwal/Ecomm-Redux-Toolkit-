@@ -1,19 +1,22 @@
 import { Navigate } from "react-router-dom";
-import { useValue } from "../contextApi/context";
 import toast from 'react-hot-toast';
-import { useEffect } from "react";
 import { useFirebase } from "../firebase/firebaseConfig";
- // create high-level protected route below
+import { useEffect } from "react";
 
- const ProtectedRoute = ({children})=>{
+const ProtectedRoute = ({children}) => {
   const {user} = useFirebase();
 
-  //  useEffect(()=>{
-    if(!user){
+  useEffect(() => {
+    if (!user) {
       toast.error("You must be logged in before accessing");
-      return <Navigate to="/" replace={true}/>;
     }
-  //  },[isLoggedIn])
-    return children;
+  }, [user]);
+
+  if (!user) {
+    return <Navigate to="/" replace={true} />;
   }
-  export default ProtectedRoute;
+
+  return children;
+}
+
+export default ProtectedRoute;

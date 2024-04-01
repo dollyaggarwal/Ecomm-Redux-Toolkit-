@@ -25,17 +25,25 @@ import { firebaseAuth,firestoreDB } from "./firebaseInit";
  
  //user authentication signup
  export const signupUserWithEmailAndPassword = async (email, password) => {
+  try{
     const userCrediential = await createUserWithEmailAndPassword(
       firebaseAuth,
       email,
       password
     );
     return userCrediential;
+  }catch(error){
+    return error;
+  }
   };
   //user authentication signin
   export const loginUserWithEmailAndPassword = async (email, password) => {
+    try{
 	const userCrediential= await signInWithEmailAndPassword(firebaseAuth, email, password);
 	return userCrediential;  
+    }catch(error){
+      return error;
+    }
 };
   //user signin with google
   export const signInWithGoogle = async () => {

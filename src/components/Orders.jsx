@@ -1,13 +1,21 @@
-import React from 'react';
-import { itemValue } from '../contextApi/itemContext';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@material-tailwind/react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchOrders, orderSelector } from '../Redux/Reducers/orderReducer';
+import { useFirebase } from '../firebase/firebaseConfig';
 function Orders() {
-	const { orders } = itemValue();
+	const {user} = useFirebase();
+	const {orders,orderTotal} = useSelector(orderSelector);
+	const dispatch = useDispatch();
+
+	useEffect(()=>{
+		dispatch(fetchOrders({userId:user.uid}))
+	},[dispatch,user])
 
 	return (
 		<>
-			<section className={` ${orders.length === 0 ? "h-full": "h-screen md:h-full w-full py-1 bg-gray-100"}`}>
+			<section className={` ${orders.length === 0 ? "h-full": "h-screen md:h-full w-full py-1 bg-white"}`}>
 				<div className='w-full xl:w-8/12 mb-24 xl:mb-2 md:px-4 mx-auto mt-20'>
 					<div className='rounded-t mb-0 px-2 py-3 border-0'>
 						<div className='flex flex-wrap items-center justify-center'>
@@ -32,13 +40,7 @@ function Orders() {
 									</div>
 								</div>
 					) : (
-						orders.map((order, index) => {
-							const orderTotal = order.order
-								.reduce((curr, item) => curr + item.price * item.qty, 0)
-								.toLocaleString('en-IN');
-
-							return (
-								<>
+						orders.map((order, index) =>(
 									<div
 										key={index}
 										className='relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded '>
@@ -96,9 +98,9 @@ function Orders() {
 											</table>
 										</div>
 									</div>
-								</>
-							);
-						})
+							
+							)
+						)
 					)}
 				</div>
 			</section>

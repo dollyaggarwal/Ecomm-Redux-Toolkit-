@@ -14,7 +14,9 @@ export const getAllCarts = createAsyncThunk('getAllCarts',async({userId},thunkAP
    try{
    
     const getCarts = await getADocsFromFirestore("carts", userId);
-    thunkAPI.dispatch(setToCart(getCarts.carts))
+    thunkAPI.dispatch(setToCart(getCarts.carts));
+    thunkAPI.dispatch(findCartTotal());
+    thunkAPI.dispatch(findFinalTotal());
        
    }catch(error){
     console.log(error)
@@ -26,11 +28,10 @@ export const addToCarts = createAsyncThunk('addToCarts', async({userId,item},thu
         if(userId){      
             let userCarts =thunkAPI.getState().cartReducer.carts;
             let itemExists = userCarts.find((product)=> product.id === item.id);
-            console.log(userCarts)
 
             if(!itemExists){
                 const updatedCart = [...userCarts,{...item, qty:1}];
-                console.log(updatedCart)
+             
                 await setDataToFirestoreRef('carts',userId,{
                     carts:updatedCart,
                     updatedAt: new Date().toDateString(),
@@ -40,7 +41,7 @@ export const addToCarts = createAsyncThunk('addToCarts', async({userId,item},thu
             }else{
                 const updatedCart = userCarts.map((product)=>
                 product.id === item.id ? {...product, qty:product.qty+1} : product );
-                console.log(updatedCart)
+               
                 await setDataToFirestoreRef('carts',userId,{
                     carts:updatedCart,
                     updatedAt: new Date().toDateString(),
@@ -79,7 +80,60 @@ export const removeFromCarts = createAsyncThunk('removeFromCarts', async({userId
 }catch(error){
     console.log(error);
 }
-})
+});
+
+export const increaseQuantity = createAsyncThunk('increaseQuantity', async({userId,itemId},thunkAPI)=>{
+    try {
+            if(userId){      
+                let userCarts =thunkAPI.getState().cartReducer.carts;
+              
+                    const updatedCart = userCarts.map((product)=>
+                    product.id === itemId ? {...product, qty:product.qty+1} : product );
+                    await setDataToFirestoreRef('carts',userId,{
+                        carts:updatedCart,
+                        updatedAt: new Date().toDateString(),
+                    }); 
+                    toast.success("1X Item qunatity increases");
+                
+                thunkAPI.dispatch(getAllCarts({userId}));
+                }
+            
+        }catch(error){
+            console.log(error);
+        }
+    });
+
+    export const decreaseQuantity = createAsyncThunk('decreaseQuantity', async({userId,itemId},thunkAPI)=>{
+        try {
+            
+                if(userId){      
+                    let userCarts =thunkAPI.getState().cartReducer.carts;
+                  
+                    const updatedCart = userCarts.map((product) => {
+                        if (product.id === itemId) {
+                            return product.qty > 1
+                                ? { ...product, qty: product.qty - 1 }
+                                : thunkAPI.dispatch(removeFromCarts({userId,itemId}));
+                        } else {
+                            return product
+                        }
+                    });
+                       
+                        await setDataToFirestoreRef('carts',userId,{
+                            carts:updatedCart,
+                            updatedAt: new Date().toDateString(),
+                        }); 
+                        toast.error("1X Item qunatity decreases");
+                    
+                    thunkAPI.dispatch(getAllCarts({userId}));
+                    }
+                
+            }catch(error){
+                console.log(error);
+            }
+        });
+
+       
 const cartSlice = createSlice ({
     name:'cart',
     initialState,
@@ -87,10 +141,16 @@ const cartSlice = createSlice ({
        setToCart:(state,action)=>{
         state.carts = action.payload
        },
+        findCartTotal:(state,action)=>{
+        state.cartTotal=state.carts.reduce((curr, item) => curr + item.price * item.qty, 0).toLocaleString('en-IN');
+    },
+      findFinalTotal:(state,action)=>{
+        state.finalTotal = state.cartTotal !== 0 && state.cartTotal < 500 ? parseInt(state.cartTotal) + 75 : state.cartTotal;
+    }
       
     }
 });
 
 export const cartReducer = cartSlice.reducer;
-export const {setToCart} = cartSlice.actions;
+export const {setToCart,findCartTotal,findFinalTotal} = cartSlice.actions;
 export const cartSelector = (state)=>state.cartReducer;

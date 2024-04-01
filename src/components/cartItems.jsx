@@ -1,26 +1,28 @@
 import React, { useEffect } from 'react';
 import { MdDelete } from 'react-icons/md';
 import { Button } from '@material-tailwind/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useFirebase } from '../firebase/firebaseConfig';
 import { useDispatch, useSelector } from 'react-redux';
-import { cartSelector, getAllCarts, removeFromCarts } from '../Redux/Reducers/cartReducer';
+import { cartSelector, decreaseQuantity, findCartTotal, findFinalTotal, getAllCarts, increaseQuantity, removeFromCarts } from '../Redux/Reducers/cartReducer';
+import { checkoutOrders } from '../Redux/Reducers/orderReducer';
 
 function CartItems() {
 	const {user} = useFirebase();
 	const dispatch = useDispatch();
-	const {carts} = useSelector(cartSelector);
-	const cartTotal = 0, finalTotal=0;
-	// const cartTotal = cart
-	// 	.reduce((curr, item) => curr + item.price * item.qty, 0)
-	// 	.toLocaleString('en-IN');
+	const {carts,cartTotal,finalTotal} = useSelector(cartSelector);
+	const navigate = useNavigate();
 
-	// const finalTotal =
-	// 	cartTotal !== 0 && cartTotal < 500 ? parseInt(cartTotal) + 75 : cartTotal;
+	const checkoutToOrders = ()=>{
+		dispatch(checkoutOrders({userId:user.uid}))
+		navigate('/orders');
+	}
 useEffect(()=>{
-	console.log(user.uid)
+
  dispatch(getAllCarts({userId:user.uid}));
+
 },[dispatch,user])
+
 	return (
 		<>
 			<div className='p-5'>
@@ -42,10 +44,10 @@ useEffect(()=>{
 											</tr>
 										</thead>
 
-										
+										<tbody>
 											{carts.map((item) => {
 												return (
-													<tbody>
+												
 													<tr key={item.id}>
 														<td className='py-2 flex items-center justify-center'>
 															<div className='h-20 w-16'>
@@ -66,7 +68,7 @@ useEffect(()=>{
 															<div className='flex items-center'>
 																<button
 																	className='border rounded-md py-2 px-4 mr-2'
-																	onClick={() => decreaseQuantity(item.id)}>
+																	onClick={() => dispatch(decreaseQuantity({userId:user.uid,itemId:item.id}))}>
 																	-
 																</button>
 																<span className='text-center w-2'>
@@ -74,7 +76,7 @@ useEffect(()=>{
 																</span>
 																<button
 																	className='border rounded-md py-2 px-4 ml-2'
-																	onClick={() => increaseQuantity(item.id)}>
+																	onClick={() => dispatch(increaseQuantity({userId:user.uid,itemId:item.id}))}>
 																	+
 																</button>
 															</div>
@@ -89,9 +91,11 @@ useEffect(()=>{
 															/>
 														</td>
 													</tr>
-													</tbody>
+												
 												);
+											
 											})}
+											</tbody>
 											{/* More product rows */}
 										
 									</table>
@@ -139,7 +143,7 @@ useEffect(()=>{
 									<Link to='/orders'>
 										<button
 											className='bg-black text-white font-bold text-md py-2 px-2 rounded-md hover:bg-orange-400 hover:text-black mt-4 w-full'
-											onClick={()=>{}}>
+											onClick={checkoutToOrders}>
 											Checkout
 										</button>
 									</Link>

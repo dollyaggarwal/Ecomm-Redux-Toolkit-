@@ -71,8 +71,9 @@ function App() {
 				<Route
 						path='cart'
 						element={
-							
+							<ProtectedRoute>
 								<CartItems />
+								</ProtectedRoute>
 							
 						}
 					/>
