@@ -36,19 +36,19 @@ export const addToCarts = createAsyncThunk('addToCarts', async({userId,item},thu
                     carts:updatedCart,
                     updatedAt: new Date().toDateString(),
                 }); 
-                toast.success("Item added to cart successfully");
+                toast.success("1X item added to cart successfully");
                 thunkAPI.dispatch(getAllCarts({userId}));
             }else{
-                const updatedCart = userCarts.map((product)=>
-                product.id === item.id ? {...product, qty:product.qty+1} : product );
-               
+                const newItem =  {...itemExists, qty:itemExists.qty+1}
+                const updatedCart = userCarts.map((product)=> product.id === item.id ? newItem: product );
                 await setDataToFirestoreRef('carts',userId,{
                     carts:updatedCart,
                     updatedAt: new Date().toDateString(),
                 }); 
-                toast.success("Item added to cart successfully");
+                thunkAPI.dispatch(getAllCarts({userId}));
+                toast.success(`${newItem.qty}X items added to cart successfully`);
             }
-            thunkAPI.dispatch(getAllCarts({userId}));
+          
            
         }else{
             toast.error("Please login to add items in your cart");
@@ -71,7 +71,7 @@ export const removeFromCarts = createAsyncThunk('removeFromCarts', async({userId
                         carts:updatedCart,
                         updatedAt: new Date().toDateString(),
                     }); 
-                    toast.error("Item removed from cart successfully");
+                    toast.error(`${itemExists.qty}X items removed from cart successfully`);
                     thunkAPI.dispatch(getAllCarts({userId}));
                 }      
     }else {
