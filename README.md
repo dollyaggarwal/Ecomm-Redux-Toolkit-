@@ -1,4 +1,4 @@
-# E-Commerce Application- Bucket-Store
+ <h1 align="center" style="font-size: 36px;"><img src="https://github.com/dollyaggarwal/Ecomm-Redux-Toolkit-/assets/108432161/0e0ad085-ef04-4b89-ac98-5e8be3091cd4"width=60/> BUCKET STORE</h1>
 
 Welcome to our e-commerce application! This project is built using React.js, Redux-Toolkit, Context API , Firebase, and Tailwind CSS to provide users with a seamless shopping experience.
 
@@ -50,16 +50,14 @@ Welcome to our e-commerce application! This project is built using React.js, Red
 To run this project locally, follow these steps:
 
 1. Clone the repository:
-git clone https://github.com/dollyaggarwal/Ecomm-Redux-Toolkit-
-2. Navigate to the project directory:
-
-cd E-Comm-Redux-Toolkit-
+`git clone https://github.com/dollyaggarwal/Ecomm-Redux-Toolkit-`
+2. Navigate to the project directory: `cd E-Comm-Redux-Toolkit-`
 
 3. Install dependencies:
-   npm install
+   `npm install`
 
 4. Start the development server:
-   npm start
+  `npm run dev`
    
 ## Contributing
 We welcome contributions from the community! If you'd like to contribute to this project, please fork the repository and submit a pull request with your changes.
